@@ -2,13 +2,16 @@
 {
     public class Admin
     {
-        public String? Username {  get; set; }
-        public String? Password { get; set; }
-        public String? Email { get; set; }
+        public int Id { get; set; }
+
+        public String Username { get; set; } = null!;
+        public String? Password { get; set; } = null!;
+        public String? Email { get; set; } = null!;
+        public String Token { get; set; } = null!;
 
         public override string ToString()
         {
-            return $"username: {Username} email: {Email}";
+            return $"username: {Username} || email: {Email} || token: {Token}";
         }
 
     }
