@@ -11,7 +11,12 @@
 
         public override string ToString()
         {
-            return $"username: {Username} || email: {Email} || token: {Token}";
+            string parsed = "";
+            parsed += "username : " + Username + "\n";
+            parsed += "password : " + Password + "\n";
+            parsed += "email : " + Email + "\n";
+            parsed += "token : " + Token + "\n";
+            return parsed;
         }
 
     }

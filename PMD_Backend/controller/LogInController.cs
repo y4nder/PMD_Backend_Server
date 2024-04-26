@@ -2,19 +2,10 @@
 using PMD_Backend.interfaces;
 using PMD_Backend.models;
 using PMD_Backend.util;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Net.WebSockets;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PMD_Backend.controller
 {
-    public class LogInController
+    public class LogInController : Logger
     {
         private LoginFormData loginFormData;
         
@@ -61,10 +52,8 @@ namespace PMD_Backend.controller
                 return Message.INCORRECT_PASSWORD;
             }
 
-
-
             //add to logs table if login credentials are correct
-            var validationMessage = CreateLog(admin);
+            var validationMessage = new LogCreator().CreateLog(admin, "logged in");
 
             
             if (validationMessage != Message.OK)
@@ -80,7 +69,7 @@ namespace PMD_Backend.controller
             }
         }
 
-        private string CreateLog(Admin admin)
+        public string CreateLog(Admin admin)
         {
             using (var connection = new MySqlConnection(Environment.GetEnvironmentVariable("ConnectionString")))
             {
@@ -112,7 +101,8 @@ namespace PMD_Backend.controller
                 try
                 {
                     string token = TokenGenerator.GenerateToken();
-                    string query = "INSERT INTO `usertokens`(`admin_FK`, `token`) VALUES (@admin_FK, @token)";
+                    string table = "usertokens";
+                    string query = $"INSERT INTO {table}(`admin_FK`, `token`) VALUES (@admin_FK, @token)";
 
 
                     using (MySqlCommand command = new MySqlCommand(query, connection))
@@ -121,7 +111,7 @@ namespace PMD_Backend.controller
                         command.Parameters.AddWithValue("@token", token);
                         connection.Open();
                         int rows = command.ExecuteNonQuery();
-                        Console.WriteLine("rows affected: " + rows);
+                        Console.WriteLine("rows affected: " + rows + " at table " + table);
                     }
 
                     //add the token to the model

@@ -19,20 +19,31 @@ namespace PMD_Backend
         }
 
         //log out for admins
-
-
-        public static void Main(string[] args)
+        public string LogOutAdmin(string token)
         {
-            var mess = new Server().LogInAdmin(new LoginFormData
-            {
-                Username = "admin",
-                Password = "admin"
-            }, out Admin? admin);
-            Console.WriteLine(mess);
-            Console.WriteLine(admin);
+            return new LogOutController(token).LogOut();
+        }
+
+
+        //retrieve admin details
+        public string GetAdminDetails(string token, out Admin? admin)
+        {
+            return new GetDetailsController(token).GetDetails(out admin);
         }
 
 
 
+
+
+
+
+        //tester method
+        public static void Main(string[] args)
+        {
+           
+        }
+
+
+        
     }
 }

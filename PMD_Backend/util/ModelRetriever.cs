@@ -11,14 +11,15 @@ namespace PMD_Backend.util
 {
     public class ModelRetriever
     {
-        public string RetrieveAdmin(out Admin? admin, string username)
+        public string RetrieveAdminWithToken(out Admin? admin, string username)
         {
             using (var connection = new MySqlConnection(Environment.GetEnvironmentVariable("ConnectionString")))
             {
                 try
                 {
                     connection.Open();
-                    string query = "SELECT * FROM admins WHERE username = @username";
+                    string table = "admin_details_view";
+                    string query = $"SELECT * FROM {table} WHERE username = @username";
                     using (var command = new MySqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@username", username);
@@ -31,7 +32,52 @@ namespace PMD_Backend.util
                                     Id = (int)reader["admin_PK"],
                                     Username = (string)reader["username"],
                                     Password = (string)reader["password"],
-                                    Email = (string)reader["email"]
+                                    Email = (string)reader["email"],
+                                    Token = (string)reader["token"],
+                                };
+                            }
+                            else
+                            {
+                                admin = null;
+                                return Message.USER_NOT_FOUND;
+                            }
+                        }
+                    }
+
+                    return Message.OK;
+                }
+                catch (Exception ex)
+                {
+                    admin = null;
+                    Console.WriteLine(ex.Message);
+                    return ex.Message;
+                }
+            }
+
+        }
+
+        public string RetrieveAdmin(out Admin? admin, string username)
+        {
+            using (var connection = new MySqlConnection(Environment.GetEnvironmentVariable("ConnectionString")))
+            {
+                try
+                {
+                    connection.Open();
+                    string table = "admins";
+                    string query = $"SELECT * FROM {table} WHERE username = @username";
+                    using (var command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@username", username);
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                admin = new Admin
+                                {
+                                    Id = (int)reader["admin_PK"],
+                                    Username = (string)reader["username"],
+                                    Password = (string)reader["password"],
+                                    Email = (string)reader["email"],
                                 };
                             }
                             else
