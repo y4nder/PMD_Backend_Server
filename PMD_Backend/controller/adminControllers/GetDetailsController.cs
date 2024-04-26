@@ -7,12 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PMD_Backend.controller
+namespace PMD_Backend.controller.adminControllers
 {
     public class GetDetailsController
     {
         private string token;
-        public GetDetailsController(string token) 
+        public GetDetailsController(string token)
         {
             this.token = token;
         }
@@ -27,12 +27,12 @@ namespace PMD_Backend.controller
                     string table = "admin_details_view";
                     string query = $"SELECT * FROM {table} WHERE token = @token";
                     connection.Open();
-                    using(var command = new MySqlCommand(query, connection))
+                    using (var command = new MySqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@token", token);
-                        using(var reader = command.ExecuteReader())
+                        using (var reader = command.ExecuteReader())
                         {
-                            if(reader.Read())
+                            if (reader.Read())
                             {
                                 admin = new Admin
                                 {

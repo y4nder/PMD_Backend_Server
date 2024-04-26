@@ -3,12 +3,12 @@ using PMD_Backend.interfaces;
 using PMD_Backend.models;
 using PMD_Backend.util;
 
-namespace PMD_Backend.controller
+namespace PMD_Backend.controller.adminControllers
 {
-    public class LogInController : Logger
+    public class LogInController
     {
         private LoginFormData loginFormData;
-        
+
         public LogInController(LoginFormData loginFormData)
         {
             this.loginFormData = loginFormData;
@@ -28,11 +28,11 @@ namespace PMD_Backend.controller
             //Try to retrieve username
             message = new ModelRetriever().RetrieveAdmin(out admin, loginFormData.Username);
 
-            if(message != Message.OK)
+            if (message != Message.OK)
             {
                 return message;
             }
-            
+
             //validate if username exists
             if (admin == null)
             {
@@ -41,13 +41,13 @@ namespace PMD_Backend.controller
 
             //check if already logged in
             var logsMessage = new LogsChecker().Check(admin.Id, out bool adminAlreadyLoggedIn);
-            if(adminAlreadyLoggedIn)
+            if (adminAlreadyLoggedIn)
             {
                 return Message.USER_IS_ALREADY_LOGGED_IN;
             }
 
             //validate if password matches
-            if(loginFormData.Password != admin.Password)
+            if (loginFormData.Password != admin.Password)
             {
                 return Message.INCORRECT_PASSWORD;
             }
@@ -55,42 +55,17 @@ namespace PMD_Backend.controller
             //add to logs table if login credentials are correct
             var validationMessage = new LogCreator().CreateLog(admin, "logged in");
 
-            
+
             if (validationMessage != Message.OK)
             {
                 //return exception message
                 return validationMessage;
-            } 
+            }
             else
             {
                 //add token to admin model and map the token to usertokens table
                 var tokenGenerationMessage = GenerateToken(admin);
                 return tokenGenerationMessage;
-            }
-        }
-
-        public string CreateLog(Admin admin)
-        {
-            using (var connection = new MySqlConnection(Environment.GetEnvironmentVariable("ConnectionString")))
-            {
-                try
-                {
-                    string query = "INSERT INTO `adminlogs`(`adminFK`, `action`) VALUES (@adminFK, @action)";
-                    using (MySqlCommand command = new MySqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@adminFK", admin.Id);
-                        command.Parameters.AddWithValue("@action", "logged in");
-                        connection.Open();
-                        int rows = command.ExecuteNonQuery();
-                        Console.WriteLine("rows affected: " + rows);
-                    }
-
-                    return Message.OK;
-                }
-                catch (Exception ex)
-                {
-                    return ex.Message;
-                }
             }
         }
 
@@ -115,7 +90,7 @@ namespace PMD_Backend.controller
                     }
 
                     //add the token to the model
-                    admin.Token = token;    
+                    admin.Token = token;
 
                     return Message.OK;
                 }

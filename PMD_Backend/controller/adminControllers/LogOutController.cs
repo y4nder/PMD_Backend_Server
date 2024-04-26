@@ -3,7 +3,7 @@ using PMD_Backend.interfaces;
 using PMD_Backend.models;
 using PMD_Backend.util;
 
-namespace PMD_Backend.controller
+namespace PMD_Backend.controller.adminControllers
 {
     public class LogOutController
     {
@@ -19,15 +19,20 @@ namespace PMD_Backend.controller
             Admin? admin;
 
             //retreive admin token if exists
-            message = new GetDetailsController(this.token).GetDetails(out admin);
-            if(message != Message.OK) return message;
+            var verifyer = new TokenVerifyer(token);
+            
+            message = verifyer.Message;
+            if (message != Message.OK) return message;
+
+            //get details of user
+            admin = verifyer.getUser();
 
             //if admin is logged in then remove its token on usertokens table
-            if(admin != null)
+            if (admin != null)
             {
                 //remove its token
                 message = removeToken(admin.Token);
-                if(message != Message.OK ) return message;
+                if (message != Message.OK) return message;
 
                 //create log for action
                 message = new LogCreator().CreateLog(admin, "logged out");

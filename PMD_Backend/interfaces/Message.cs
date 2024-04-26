@@ -17,5 +17,7 @@ namespace PMD_Backend.interfaces
         public static readonly string INCORRECT_PASSWORD = "Incorrect password";
         public static readonly string USER_IS_ALREADY_LOGGED_IN = "User is already logged in";
         public static readonly string UNAUTHORIZED = "Unauthorized, valid token is required";
+        public static readonly string INVALID_VEHICLE_TYPE = "Invalid vehicle type name";
+        public static readonly string VEHICLE_TYPE_NOT_FOUND = "Vehicle type not found";
     }
 }
