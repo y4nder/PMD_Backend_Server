@@ -30,6 +30,7 @@ namespace PMD_Backend.controller.adminControllers
 
             if (message != Message.OK)
             {
+                admin = null;
                 return message;
             }
 
@@ -47,19 +48,21 @@ namespace PMD_Backend.controller.adminControllers
             }
 
             //validate if password matches
-            if (loginFormData.Password != admin.Password)
+            if (!(new Security().ValidatePassword(loginFormData.Password, admin)))
             {
+                admin = null;
                 return Message.INCORRECT_PASSWORD;
             }
 
             //add to logs table if login credentials are correct
-            var validationMessage = new LogCreator().CreateLog(admin, "logged in");
+            var logMessage = new LogCreator().CreateLog(admin, "logged in");
 
 
-            if (validationMessage != Message.OK)
+            if (logMessage != Message.OK)
             {
                 //return exception message
-                return validationMessage;
+                admin = null;
+                return logMessage;
             }
             else
             {

@@ -9,9 +9,9 @@ namespace PMD_Backend
     public class Server
     {
         //registering an admin
-        public string RegisterAdmin(Admin admin)
+        public string RegisterAdmin(RegisterFormData registerFormData)
         {
-            return new RegisterController(admin).Register();
+            return new RegisterController(registerFormData).Register();
         }
 
         //log in for admins
@@ -57,22 +57,17 @@ namespace PMD_Backend
         }
 
 
-
-
         //tester method
         public static void Main(string[] args)
         {
-            string token = "MPCDbWQEHYGaX1Iq9IzvHdpyW1qoUkqv";
-            var message = new Server().GetAllParkingSpaces(token, out ICollection<ParkingSpaces>? allParkingSpaces);
-            Console.WriteLine(message);
-            if(allParkingSpaces != null)
+            var message = new Server().LogInAdmin(new LoginFormData
             {
-                foreach(var parkingSpace in allParkingSpaces)
-                {
-                    Console.WriteLine(parkingSpace);
-                    Console.WriteLine();
-                }
-            }
+                Username = "admin",
+                Password = "admin",
+            }, out Admin? admin);
+
+            Console.WriteLine(message);
+            Console.WriteLine(admin);
         }
 
 

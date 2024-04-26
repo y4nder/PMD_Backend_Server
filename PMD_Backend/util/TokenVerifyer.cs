@@ -9,7 +9,7 @@ namespace PMD_Backend.util
         public string Message {  get; set; }
 
 
-        public Admin getUser()
+        public Admin? getUser()
         {
             return this.admin;
         }

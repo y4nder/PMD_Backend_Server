@@ -19,5 +19,6 @@ namespace PMD_Backend.interfaces
         public static readonly string UNAUTHORIZED = "Unauthorized, valid token is required";
         public static readonly string INVALID_VEHICLE_TYPE = "Invalid vehicle type name";
         public static readonly string VEHICLE_TYPE_NOT_FOUND = "Vehicle type not found";
+        public static readonly string SECURITY_KEY_NOT_FOUND = "Security key not found";
     }
 }

@@ -9,7 +9,7 @@ namespace PMD_Backend.util
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             char[] tokenChars = new char[length];
 
-            using (var rng = new RNGCryptoServiceProvider())
+            using (var rng = RandomNumberGenerator.Create())
             {
                 byte[] tokenData = new byte[length];
                 rng.GetBytes(tokenData);

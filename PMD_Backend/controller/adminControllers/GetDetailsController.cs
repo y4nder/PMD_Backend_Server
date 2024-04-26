@@ -38,7 +38,7 @@ namespace PMD_Backend.controller.adminControllers
                                 {
                                     Id = (int)reader["admin_PK"],
                                     Username = (string)reader["username"],
-                                    Password = (string)reader["password"],
+                                    Password = (byte[])reader["password"],
                                     Email = (string)reader["email"],
                                     Token = (string)reader["token"]
                                 };
