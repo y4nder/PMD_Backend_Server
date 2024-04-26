@@ -6,8 +6,8 @@ namespace PMD_Backend.util
     public class TokenVerifyer
     {
         private Admin? admin;
-        
         public string Message {  get; set; }
+
 
         public Admin getUser()
         {

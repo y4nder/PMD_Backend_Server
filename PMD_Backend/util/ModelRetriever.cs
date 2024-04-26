@@ -223,5 +223,108 @@ namespace PMD_Backend.util
                 }
             }
         }
+
+        //get all parking spaces
+        public string RetrieveAllParkingSpaces(string token, out ICollection<ParkingSpaces>? allParkingSpaces)
+        {
+            string message = "";
+            //verify token
+            var verifyer = new TokenVerifyer(token);
+            message = verifyer.Message;
+            if(message != Message.OK)
+            {
+                allParkingSpaces = null;
+                return message;
+            }
+
+            //get all parking spaces
+            message = RetrieveAllParkingSpaces(out allParkingSpaces, ALL_PARKING_SPACES);
+            if(message != Message.OK)
+            {
+                allParkingSpaces = null;
+                return message;
+
+            }
+            return message;
+        }
+
+        //get all available parkingSpaces
+        public string RetrieveAllAvailableParkingSpaces(string token, out ICollection<ParkingSpaces>? allParkingSpaces)
+        {
+            string message = "";
+            //verify token
+            var verifyer = new TokenVerifyer(token);
+            message = verifyer.Message;
+            if (message != Message.OK)
+            {
+                allParkingSpaces = null;
+                return message;
+            }
+
+            //get all parking spaces
+            message = RetrieveAllParkingSpaces(out allParkingSpaces, ALL_AVAILABLE_PARKING_SPACES);
+            if (message != Message.OK)
+            {
+                allParkingSpaces = null;
+                return message;
+
+            }
+            return message;
+        }
+
+
+        private static readonly int ALL_PARKING_SPACES = 1;
+        private static readonly int ALL_AVAILABLE_PARKING_SPACES = 2;
+
+        private string RetrieveAllParkingSpaces(out ICollection<ParkingSpaces> allParkingSpaces, int toRetrieve)
+        {
+            allParkingSpaces = new List<ParkingSpaces>();
+            using (var sqlConnection = new MySqlConnection(Environment.GetEnvironmentVariable("ConnectionString")))
+            {
+                try
+                {
+                    sqlConnection.Open();
+                    string table = "parkingspaces";
+
+                    string query = "";
+                    //determine if only available or all parking spaces are to be returned
+                    if(toRetrieve == ALL_PARKING_SPACES)
+                    {
+                        query = $"SELECT * FROM {table}";
+                    }
+
+                    if(toRetrieve == ALL_AVAILABLE_PARKING_SPACES)
+                    {
+                        query = $"SELECT * FROM {table} WHERE availability = 1";
+                    }
+
+                    using (var command = new MySqlCommand(query, sqlConnection))
+                    {
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var parkingSpace = new ParkingSpaces
+                                {
+                                    Id = (int)reader["parkingSpacePK"],
+                                    ParkingSpaceName = (string)reader["parkingSpaceName"],
+                                    VehicleCount = (int)reader["vehicle_count"],
+                                    VehicleLimit = (int)reader["vehicle_limit"],
+                                    Availability = (int)reader["availability"]
+                                };
+                                allParkingSpaces.Add(parkingSpace);
+                            }
+                        }
+                    }
+                    return Message.OK;
+                }
+                catch (Exception ex)
+                {
+                    return ex.Message;
+                }
+
+            }
+
+        }
     }
 }
