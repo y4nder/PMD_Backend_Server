@@ -12,8 +12,4 @@
     <PackageReference Include="NuGet.Frameworks" Version="6.9.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="controller\CreateEntryControllers\" />
-  </ItemGroup>
-
 </Project>

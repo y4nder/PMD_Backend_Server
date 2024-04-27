@@ -1,8 +1,7 @@
 ﻿using PMD_Backend.controller.adminControllers;
+using PMD_Backend.controller.CreateEntryControllers;
 using PMD_Backend.models;
 using PMD_Backend.util;
-using System.Net.WebSockets;
-using System.Reflection.Metadata.Ecma335;
 
 namespace PMD_Backend
 {
@@ -56,18 +55,32 @@ namespace PMD_Backend
             return new ModelRetriever().RetrieveAllAvailableParkingSpaces(token, out allParkingSpaces);
         }
 
+        //creating an entry
+        public string CreateAnEntry(string token, CreateEntryForm createEntryForm)
+        {
+            return new CreateEntryController(token, createEntryForm).Create();
+        }
+
+
 
         //tester method
         public static void Main(string[] args)
         {
-            var message = new Server().LogInAdmin(new LoginFormData
+            string token = "n0BskRBOaGiAcUaVIj8qhe34N6Jp2PBG";
+            var form = new CreateEntryForm
             {
-                Username = "admin",
-                Password = "admin",
-            }, out Admin? admin);
+                VehicleTypeName = "SUV",
+                VehicleBrand = "Toyota",
+                LicensePlate = "ABC123",
+                ParkOutDateTime = DateTime.Now.AddDays(30),
+                OwnerFirstName = "John",
+                OwnerLastName = "Doe",   
+                FloorLevel = "A"
+        };
+
+            var message = new Server().CreateAnEntry(token, form);
 
             Console.WriteLine(message);
-            Console.WriteLine(admin);
         }
 
 

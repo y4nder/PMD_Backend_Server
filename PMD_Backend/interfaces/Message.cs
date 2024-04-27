@@ -20,5 +20,12 @@ namespace PMD_Backend.interfaces
         public static readonly string INVALID_VEHICLE_TYPE = "Invalid vehicle type name";
         public static readonly string VEHICLE_TYPE_NOT_FOUND = "Vehicle type not found";
         public static readonly string SECURITY_KEY_NOT_FOUND = "Security key not found";
+        public static readonly string EMPTY_FORM = "Form is Empty";
+        public static readonly string INVALID_PARK_OUT_DATE_TIME = "Invalid Park Out Date Time";
+        public static readonly string VEHICLE_NOT_FOUND = "Vehicle was not found";
+        public static readonly string VEHICLE_ALREADY_PARKED = "Vehicle is already parked";
+
+        public static readonly string INVALID_TYPE_AND_BRAND = "Column 'type_and_brand_FK' cannot be null";
+        public static readonly string FLOOR_DOES_NOT_EXIST = "Floor does not exist";
     }
 }

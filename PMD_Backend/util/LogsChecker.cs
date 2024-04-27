@@ -1,11 +1,12 @@
 ﻿using MySql.Data.MySqlClient;
 using PMD_Backend.interfaces;
+using PMD_Backend.models;
 
 namespace PMD_Backend.util
 {
     public class LogsChecker
     {
-        public string Check(int id, out bool flag)
+        public string Check(Admin admin, out bool flag)
         {
             flag = false;
 
@@ -17,12 +18,13 @@ namespace PMD_Backend.util
                     string query = "SELECT * FROM `usertokens` WHERE `admin_FK` = @admin_FK";
                     using (var command = new MySqlCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@admin_FK", id);
+                        command.Parameters.AddWithValue("@admin_FK", admin.Id);
                         using (var reader = command.ExecuteReader())
                         {
                             if (reader.Read())
                             {
                                 flag = true;
+                                admin.Token = (string)reader["token"];
                             }
                             else
                             {

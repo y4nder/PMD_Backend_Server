@@ -41,7 +41,7 @@ namespace PMD_Backend.controller.adminControllers
             }
 
             //check if already logged in
-            var logsMessage = new LogsChecker().Check(admin.Id, out bool adminAlreadyLoggedIn);
+            var logsMessage = new LogsChecker().Check(admin, out bool adminAlreadyLoggedIn);
             if (adminAlreadyLoggedIn)
             {
                 return Message.USER_IS_ALREADY_LOGGED_IN;

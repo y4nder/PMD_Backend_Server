@@ -326,5 +326,53 @@ namespace PMD_Backend.util
             }
 
         }
+
+        //retrieve vehicle using license plate
+        public string RetrieveVehicle(string fromTable, string where, string equals, out Vehicle? vehicle)
+        {
+            using(var sqlConnection = new MySqlConnection(Environment.GetEnvironmentVariable("ConnectionString")))
+            {
+                try
+                {
+                    string query = $"SELECT * FROM {fromTable} WHERE {where} = \"{equals}\"";
+                    sqlConnection.Open();
+                    using (var command = new MySqlCommand(query, sqlConnection))
+                    {
+                        using(var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                vehicle = new Vehicle
+                                {
+                                    Id = (int)reader["ID"],
+                                    LicensePlate = (string)reader["license_plate"],
+                                    VehicleType = (string)reader["type"],
+                                    VehicleBrand = (string)reader["brand"],
+                                    ParkInDateTime = (DateTime)reader["park_in_date_time"],
+                                    ParkOutDateTime = (DateTime)reader["park_out_date_time"],
+                                    ParkingSpace = (string)reader["parking_space_name"],
+                                    OwnerFirstName = (string)reader["owner_first_name"],
+                                    OwnerLastName = (string)reader["owner_last_name"]
+
+                                };
+
+                            }
+                            else
+                            {
+                                vehicle = null;
+                                return Message.VEHICLE_NOT_FOUND;
+                            }
+                        }
+                    }
+                    return Message.OK;
+                }
+                catch(Exception ex)
+                {
+                    vehicle = null;
+                    return ex.Message;
+                }
+            }
+        }
+
     }
 }
