@@ -2,6 +2,7 @@
 using PMD_Backend.interfaces;
 using PMD_Backend.models;
 using PMD_Backend.util;
+using PMD_Backend.util.model_retrievers;
 
 namespace PMD_Backend.controller.CreateEntryControllers
 {
@@ -52,7 +53,7 @@ namespace PMD_Backend.controller.CreateEntryControllers
 
             //validate if license plate is already parked
             if (createEntryForm.LicensePlate == null) return Message.EMPTY_FORM;
-            message = new ModelRetriever().RetrieveVehicle(fromTable: "parked_vehicles_view", where: "license_plate", equals: createEntryForm.LicensePlate, out Vehicle? retrievedVehicle);
+            message = new ModelRetriever().RetrieveVehicle(token, VehicleRetriever.PARKED, createEntryForm.LicensePlate, out Vehicle? retrievedVehicle);
             if (message != Message.OK && message != Message.VEHICLE_NOT_FOUND) return message;
 
             //if there is a retrieved vehicle
@@ -64,15 +65,14 @@ namespace PMD_Backend.controller.CreateEntryControllers
             //validate floor level
             if (createEntryForm.FloorLevel == null) return Message.EMPTY_FORM;
             message = new FloorLevelValidator(createEntryForm.FloorLevel).Validate();
-            if(message != Message.OK && message == Message.FLOOR_DOES_NOT_EXIST) return message;
-
+            if( (message != Message.OK && message == Message.FLOOR_DOES_NOT_EXIST) || message == Message.PARKING_SPACE_IS_FULL) return message;
 
             //save entry to database
             message = SaveEntry(retrievedAdmin);
             if(message != Message.OK) return message;
 
             //log audit
-            message = new ModelRetriever().RetrieveVehicle("all_vehicles_view", "license_plate", createEntryForm.LicensePlate, out Vehicle? savedVehicle);
+            message = new ModelRetriever().RetrieveVehicle(token, VehicleRetriever.ALL, createEntryForm.LicensePlate, out Vehicle? savedVehicle);
             if(message != Message.OK) return message;
 
             if(retrievedAdmin != null && savedVehicle != null)

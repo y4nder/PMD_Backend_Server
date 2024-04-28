@@ -27,5 +27,7 @@ namespace PMD_Backend.interfaces
 
         public static readonly string INVALID_TYPE_AND_BRAND = "Column 'type_and_brand_FK' cannot be null";
         public static readonly string FLOOR_DOES_NOT_EXIST = "Floor does not exist";
+        public static readonly string PARKING_SPACE_IS_FULL = "This Parking Space is at full capacity";
+        public static readonly string INVALID_PARAMETERS = "Invalid Parameters";
     }
 }

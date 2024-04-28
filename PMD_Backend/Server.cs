@@ -2,6 +2,8 @@
 using PMD_Backend.controller.CreateEntryControllers;
 using PMD_Backend.models;
 using PMD_Backend.util;
+using PMD_Backend.util.model_retrievers;
+using System.Net.WebSockets;
 
 namespace PMD_Backend
 {
@@ -34,7 +36,7 @@ namespace PMD_Backend
         //retrive all Vehicle Types
         public string GetAllVehicleTypes(string token, out ICollection<VehicleType>? vehicleTypes)
         {
-            return new ModelRetriever().GetAllVehicleTypes(token, out vehicleTypes);
+            return new ModelRetriever().RetrieveAllVehicleTypes(token, out vehicleTypes);
         }
 
         //retrive all brands with parameter vehicle type name
@@ -43,16 +45,10 @@ namespace PMD_Backend
             return new ModelRetriever().RetrieveAllBrands(vehicleTypeName, token, out brands);
         }
 
-        //retrieve all parking spaces
-        public string GetAllParkingSpaces(string token, out ICollection<ParkingSpaces>? allParkingSpaces)
+        //retrieve all parking spaces (all or available only)
+        public string GetAllParkingSpaces(string token, int toRetrieve, out ICollection<ParkingSpaces>? allParkingSpaces)
         {
-            return new ModelRetriever().RetrieveAllParkingSpaces(token, out allParkingSpaces);
-        }
-
-        //retrieve all available parkingspaces
-        public string GetAllAvailableParkingSpaces(string token, out ICollection<ParkingSpaces>? allParkingSpaces)
-        {
-            return new ModelRetriever().RetrieveAllAvailableParkingSpaces(token, out allParkingSpaces);
+            return new ModelRetriever().RetrieveAllParkingSpaces(token, toRetrieve, out allParkingSpaces);
         }
 
         //creating an entry
@@ -61,29 +57,19 @@ namespace PMD_Backend
             return new CreateEntryController(token, createEntryForm).Create();
         }
 
+        //retrieve vehicle using license palte
+        public string GetVehicle(string token, string licensePlate, out Vehicle? vehicle)
+        {
+            return new ModelRetriever().RetrieveVehicle(token, VehicleRetriever.ALL, licensePlate, out vehicle);
+        }
+
 
 
         //tester method
         public static void Main(string[] args)
         {
-            string token = "n0BskRBOaGiAcUaVIj8qhe34N6Jp2PBG";
-            var form = new CreateEntryForm
-            {
-                VehicleTypeName = "SUV",
-                VehicleBrand = "Toyota",
-                LicensePlate = "ABC123",
-                ParkOutDateTime = DateTime.Now.AddDays(30),
-                OwnerFirstName = "John",
-                OwnerLastName = "Doe",   
-                FloorLevel = "A"
-        };
-
-            var message = new Server().CreateAnEntry(token, form);
-
-            Console.WriteLine(message);
+            
         }
-
-
         
     }
 }

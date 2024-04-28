@@ -1,5 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using Org.BouncyCastle.Asn1.IsisMtt.X509;
 using PMD_Backend.interfaces;
 using PMD_Backend.models;
 using PMD_Backend.util;
@@ -26,6 +25,7 @@ namespace PMD_Backend.controller.adminControllers
             
             //upload to database
             message = SaveRegistration(encryptedPassword);
+            if (message != Message.OK) return message;
 
             //get primary key of registerd user
             message = RetrieveRegisteredData(registerFormData.Username, out Admin? admin);
