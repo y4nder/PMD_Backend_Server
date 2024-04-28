@@ -28,14 +28,17 @@ namespace PMD_Backend.util
                     {
                         using(var reader = commmand.ExecuteReader())
                         {
+                            //check if floor level exists
                             if(reader.Read())
                             {
-                                return Message.OK;
+                                //check if floor level is available
+                                if ((int)reader["availability"] == 0)
+                                    return Message.PARKING_SPACE_IS_FULL;
+                                else 
+                                    return Message.OK;
                             }
-                            else
-                            {
-                                return Message.FLOOR_DOES_NOT_EXIST;
-                            }
+                            else return Message.FLOOR_DOES_NOT_EXIST;
+                            
                         }
                     }
                 }

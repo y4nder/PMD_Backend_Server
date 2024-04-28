@@ -6,9 +6,6 @@
         public byte[] Key { get; set; } = null!;
         public byte[] Iv { get; set; } = null!;
 
-        public string? parsedKey { get; set; }
-        public string? parsedIv { get; set; }
-
         public override string ToString()
         {
             return $"ID: {Id}\n" +
