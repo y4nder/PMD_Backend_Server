@@ -1,4 +1,6 @@
-﻿namespace PMD_Backend.models
+﻿using Newtonsoft.Json;
+
+namespace PMD_Backend.models
 {
     public class Admin
     {
@@ -17,6 +19,11 @@
             parsed += "email : " + Email + "\n";
             parsed += "token : " + Token + "\n";
             return parsed;
+        }
+
+        public string PrintAsJson()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
     }

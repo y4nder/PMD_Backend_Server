@@ -3,8 +3,9 @@ using PMD_Backend.interfaces;
 using PMD_Backend.models;
 using PMD_Backend.util;
 using PMD_Backend.util.model_retrievers;
+using System.Data.Common;
 
-namespace PMD_Backend.controller.CreateEntryControllers
+namespace PMD_Backend.controller.EntryControllers
 {
     public class CreateEntryController : Auditable, Message
     {
@@ -68,11 +69,12 @@ namespace PMD_Backend.controller.CreateEntryControllers
             if( (message != Message.OK && message == Message.FLOOR_DOES_NOT_EXIST) || message == Message.PARKING_SPACE_IS_FULL) return message;
 
             //save entry to database
-            message = SaveEntry(retrievedAdmin);
+            message = SaveEntry(retrievedAdmin, out string? creationCode);
             if(message != Message.OK) return message;
+            if (creationCode == null) return message;
 
             //log audit
-            message = new ModelRetriever().RetrieveVehicle(token, VehicleRetriever.ALL, createEntryForm.LicensePlate, out Vehicle? savedVehicle);
+            message = new ModelRetriever().RetrieveVehicle(token, VehicleRetriever.BY_CREATION_CODE, creationCode, out Vehicle? savedVehicle);
             if(message != Message.OK) return message;
 
             if(retrievedAdmin != null && savedVehicle != null)
@@ -106,9 +108,10 @@ namespace PMD_Backend.controller.CreateEntryControllers
 
 
 
-        private string SaveEntry(Admin? retrievedAdmin)
+        private string SaveEntry(Admin? retrievedAdmin, out string? creationCode)
         {
-            using(var connection = new MySqlConnection(Environment.GetEnvironmentVariable("ConnectionString")))
+            creationCode = TokenGenerator.GenerateToken();                     //generate unique creation 
+            using (var connection = new MySqlConnection(Environment.GetEnvironmentVariable("ConnectionString")))
             {
                 try
                 {
@@ -126,8 +129,9 @@ namespace PMD_Backend.controller.CreateEntryControllers
                             command.Parameters.AddWithValue("@owner_first_name", createEntryForm.OwnerFirstName);
                             command.Parameters.AddWithValue("@owner_last_name", createEntryForm.OwnerLastName);
                             command.Parameters.AddWithValue("@floor_level", createEntryForm.FloorLevel);
+                            command.Parameters.AddWithValue("@creationCode", creationCode);
                             int rows = command.ExecuteNonQuery();
-                            Console.WriteLine($"rows affected : {rows} at table vehicles");
+                            Console.WriteLine($"rows affected : {rows} at creation");
                         }
                         else
                         {
@@ -149,6 +153,12 @@ namespace PMD_Backend.controller.CreateEntryControllers
             if (message == Message.INVALID_TYPE_AND_BRAND)
             {
                 message = "Invalid type and brand";
+            }
+
+            //override exception
+            if(message == Message.RESULT_CONSISTED_OF_MORE_THAN_ONE_ROW)
+            {
+                message = Message.OK;
             }
 
             return message;

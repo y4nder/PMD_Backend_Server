@@ -5,7 +5,7 @@ using PMD_Backend.util;
 
 namespace PMD_Backend.controller.adminControllers
 {
-    public class LogOutController
+    internal class LogOutController
     {
         private string token;
         public LogOutController(string token)
@@ -35,7 +35,7 @@ namespace PMD_Backend.controller.adminControllers
                 if (message != Message.OK) return message;
 
                 //create log for action
-                message = new LogCreator().CreateLog(admin, "logged out");
+                message = new AdminLogCreator().CreateLog(admin, "logged out");
                 if (message != Message.OK) return message;
             }
 

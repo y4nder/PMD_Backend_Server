@@ -29,5 +29,6 @@ namespace PMD_Backend.interfaces
         public static readonly string FLOOR_DOES_NOT_EXIST = "Floor does not exist";
         public static readonly string PARKING_SPACE_IS_FULL = "This Parking Space is at full capacity";
         public static readonly string INVALID_PARAMETERS = "Invalid Parameters";
+        public static readonly string RESULT_CONSISTED_OF_MORE_THAN_ONE_ROW = "Result consisted of more than one row";
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
 
 namespace PMD_Backend.models
 {
@@ -16,12 +12,7 @@ namespace PMD_Backend.models
 
         public override string ToString()
         {
-            string parsed = $"Id            : {Id}\n" +
-                            $"Name          : {Name}\n" +
-                            $"Flagdown      : {Flagdown} \n" +
-                            $"Additional Fee: {AdditionalFee} \n";
-            
-            return parsed;
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 }

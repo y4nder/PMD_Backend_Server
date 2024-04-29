@@ -22,6 +22,14 @@ namespace PMD_Backend.util
             return new VehicleTypesRetriever().Retrieve(token, out allVehicleTypes);
         }
 
+        //retrieve vehicle type by id
+        public string GetVehicleType(string token, int id, out VehicleType? vehicleType)
+        {
+            return new VehicleTypesRetriever().Retrieve(token, id, out vehicleType);
+        }
+
+        //retrive specific vehicle type using vehicle type id
+
         public string RetrieveAllBrands(string vehicleName, string token, out ICollection<Brand>? allBrands)
         {
             return new BrandsRetriever().Retrieve(token, vehicleName, out allBrands);
@@ -38,8 +46,10 @@ namespace PMD_Backend.util
             return new VehicleRetriever().Retrieve(token, toRetrieve, parameter, out vehicle);
         }
 
-        
-
-
+        //retrieve all history logs
+        internal string RetrieveAllLogs(string token, out ICollection<HistoryLog>? allLogs)
+        {
+            return new HistoryLogsRetriever().Retrieve(token, out allLogs);
+        }
     }
 }

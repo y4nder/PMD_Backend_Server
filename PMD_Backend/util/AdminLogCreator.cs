@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PMD_Backend.util
 {
-    public class LogCreator
+    public class AdminLogCreator
     {
         public string CreateLog(Admin admin, string action)
         {

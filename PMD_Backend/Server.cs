@@ -1,9 +1,8 @@
 ﻿using PMD_Backend.controller.adminControllers;
-using PMD_Backend.controller.CreateEntryControllers;
+using PMD_Backend.controller.EntryControllers;
 using PMD_Backend.models;
 using PMD_Backend.util;
 using PMD_Backend.util.model_retrievers;
-using System.Net.WebSockets;
 
 namespace PMD_Backend
 {
@@ -33,10 +32,16 @@ namespace PMD_Backend
             return new GetDetailsController(token).GetDetails(out admin);
         }
 
-        //retrive all Vehicle Types
+        //retrieve all Vehicle Types
         public string GetAllVehicleTypes(string token, out ICollection<VehicleType>? vehicleTypes)
         {
             return new ModelRetriever().RetrieveAllVehicleTypes(token, out vehicleTypes);
+        }
+
+        //retrieve Vehicle Type by id
+        public string GetVehicleType(string token, int id, out VehicleType? vehicleType)
+        {
+            return new ModelRetriever().GetVehicleType(token, id, out vehicleType);
         }
 
         //retrive all brands with parameter vehicle type name
@@ -57,19 +62,39 @@ namespace PMD_Backend
             return new CreateEntryController(token, createEntryForm).Create();
         }
 
-        //retrieve vehicle using license palte
+        //retrieve vehicle using license plate
         public string GetVehicle(string token, string licensePlate, out Vehicle? vehicle)
         {
             return new ModelRetriever().RetrieveVehicle(token, VehicleRetriever.ALL, licensePlate, out vehicle);
         }
 
+        //retrieve parked vehicle using license plate
+        public string GetParkedVehicle(string token, string licensePlate, out Vehicle? vehicle)
+        {
+            return new ModelRetriever().RetrieveVehicle(token, VehicleRetriever.PARKED, licensePlate, out vehicle);
+        }
 
+        //remove an entry
+        public string RemoveEntry(string token, string licensePlate, string? note)
+        {
+            return new RemoveEntryController(token).Remove(licensePlate, note);
+        }
 
-        //tester method
+        //retriev all history logs
+        public string GetAllHistoryLogs(string token, out ICollection<HistoryLog>? allLogs)
+        {
+            return new ModelRetriever().RetrieveAllLogs(token, out allLogs);
+        }
+
+        
         public static void Main(string[] args)
         {
-            
+            string token = "Y4SzBdRwu1XdI00SwtYE5cKToz720JOi";
+            string message = string.Empty;
+            message = new Server().GetAllHistoryLogs(token, out ICollection<HistoryLog>? h);
+
+            Console.WriteLine(message);
+            if(h!= null) foreach(var n in h) Console.WriteLine(n);
         }
-        
-    }
+    } 
 }

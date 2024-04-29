@@ -43,7 +43,7 @@ namespace PMD_Backend.util.model_retrievers
                                 var vehicleType = new VehicleType
                                 {
                                     Id = (int)reader["vehicle_type_PK"],
-                                    Name = (string)reader["name"],
+                                    Name = (string)reader["vehicle_type_name"],
                                     AdditionalFee = (double)reader["additional_fee"],
                                     Flagdown = (double)reader["flagdown"],
                                 };
@@ -56,6 +56,57 @@ namespace PMD_Backend.util.model_retrievers
                 }
                 catch (Exception ex)
                 {
+                    return ex.Message;
+                }
+
+            }
+        }
+
+        public string Retrieve(string token, int id, out VehicleType? vehicleType)
+        {
+            string message = "";
+
+            //verify token
+            var verifyer = new TokenVerifyer(token);
+            message = verifyer.Message;
+            if (message != Message.OK)
+            {
+                vehicleType = null;
+                return message;
+            }
+
+            using(var connection = new MySqlConnection(Environment.GetEnvironmentVariable("ConnectionString")))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = $"SELECT * FROM vehicle_types WHERE vehicle_type_PK = {id}";
+                    using (var command = new MySqlCommand(query, connection))
+                    {
+                        using(var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                vehicleType = new VehicleType
+                                {
+                                    Id = (int)reader["vehicle_type_PK"],
+                                    Name = (string)reader["name"],
+                                    Flagdown = (double)reader["flagdown"],
+                                    AdditionalFee = (double)reader["additional_fee"]
+                                };
+                            }
+                            else
+                            {
+                                vehicleType = null;
+                                return Message.VEHICLE_TYPE_NOT_FOUND;
+                            }
+                        }
+                    }
+                    return Message.OK;
+                }
+                catch(Exception ex)
+                {
+                    vehicleType = null;
                     return ex.Message;
                 }
 

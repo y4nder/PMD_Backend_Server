@@ -5,7 +5,7 @@ using PMD_Backend.util;
 
 namespace PMD_Backend.controller.adminControllers
 {
-    public class LogInController
+    internal class LogInController
     {
         private LoginFormData loginFormData;
 
@@ -55,7 +55,7 @@ namespace PMD_Backend.controller.adminControllers
             }
 
             //add to logs table if login credentials are correct
-            var logMessage = new LogCreator().CreateLog(admin, "logged in");
+            var logMessage = new AdminLogCreator().CreateLog(admin, "logged in");
 
 
             if (logMessage != Message.OK)

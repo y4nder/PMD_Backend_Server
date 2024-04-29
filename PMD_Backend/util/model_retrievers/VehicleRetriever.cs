@@ -14,16 +14,26 @@ namespace PMD_Backend.util.model_retrievers
     {
         public static readonly int ALL = 1;
         public static readonly int PARKED = 2;
+        public static readonly int BY_CREATION_CODE = 3;
+        public static readonly int BY_ID = 4;
 
         public string Retrieve(string token, int toRetreive, string paramater, out Vehicle? vehicle)
         {
             if(toRetreive == ALL)
             {
-                return Retrieve(token, "all_vehicles_view", "license_plate", paramater, out vehicle);
+                return Retrieve(token, toRetreive, "all_vehicles_view", "creation_code", paramater, out vehicle);
             } 
             else if(toRetreive == PARKED) 
             {
-                return Retrieve(token, "parked_vehicles_view", "license_plate", paramater, out vehicle);
+                return Retrieve(token, toRetreive, "parked_vehicles_view", "license_plate", paramater, out vehicle);
+            }
+            else if(toRetreive == BY_CREATION_CODE)
+            {
+                return Retrieve(token, toRetreive, "all_vehicles_view", "creation_code", paramater, out vehicle);
+            }
+            else if(toRetreive == BY_ID)
+            {
+                return Retrieve(token, toRetreive, "all_vehicles_view", "ID", paramater, out vehicle);
             }
             else
             {
@@ -34,7 +44,7 @@ namespace PMD_Backend.util.model_retrievers
         }
 
 
-        private string Retrieve(string token, string fromTable, string where, string equals, out Vehicle? vehicle)
+        private string Retrieve(string token, int toRetrieve, string fromTable, string where, string equals, out Vehicle? vehicle)
         {
             string message = string.Empty;
             //verify token
@@ -68,10 +78,16 @@ namespace PMD_Backend.util.model_retrievers
                                     ParkOutDateTime = (DateTime)reader["park_out_date_time"],
                                     ParkingSpace = (string)reader["parking_space_name"],
                                     OwnerFirstName = (string)reader["owner_first_name"],
-                                    OwnerLastName = (string)reader["owner_last_name"]
-
+                                    OwnerLastName = (string)reader["owner_last_name"],
+                                    CreationCode = (string)reader["creation_code"]
                                 };
 
+                                if(toRetrieve == PARKED)
+                                {
+                                    vehicle.ParkedVehicleID = (int)reader["parking_ID"];
+                                    vehicle.TypeID = (int)reader["type Id"];
+                                    vehicle.BrandId = (int)reader["brand Id"];
+                                }
                             }
                             else
                             {
